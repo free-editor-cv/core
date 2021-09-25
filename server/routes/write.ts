@@ -5,7 +5,7 @@ import {
   HookHandlerDoneFunction,
 } from 'fastify'
 import { Static, Type } from '@sinclair/typebox'
-import { SuccessReply } from '../Reply'
+import { SuccessReply } from '../utils/Reply'
 import buildNodeMap from '../render'
 import createPDFWriter from '../render/PDFWriter'
 
