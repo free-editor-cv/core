@@ -2,12 +2,12 @@
   "name": "editor-cv",
   "version": "0.0.0",
   "scripts": {
-    "dev": "vite",
-    "build": "vue-tsc --noEmit && vite build",
-    "serve": "vite preview",
-    "write": "yarn ts-node renderer/index.ts",
-    "server": "yarn ts-node server/index.ts",
-    "dev:server": "nodemon server/index.ts"
+    "dev:client": "vite",
+    "dev:server": "nodemon server/index.ts",
+    "build:client": "vue-tsc --noEmit && vite build",
+    "serve:client": "vite preview",
+    "serve:server": "yarn ts-node server/index.ts",
+    "dev:locale": "yarn ts-node server/locale/index.ts"
   },
   "dependencies": {
     "@sinclair/typebox": "^0.20.5",

@@ -13,13 +13,20 @@ import { createPDFFilename } from '../utils/formatter'
 interface IPDFWriter {
   filename: string
   nodeMap: NodeMap
+  outputDir?: string
 }
-export default function createPDFWriter({ filename, nodeMap }: IPDFWriter) {
+export default function createPDFWriter({
+  filename,
+  nodeMap,
+  outputDir = './tmp/',
+}: IPDFWriter) {
   const pdf = new PDFDocument()
 
   const formattedFilename = createPDFFilename(filename)
 
-  const streamPath = './tmp/' + formattedFilename
+  const streamPath = outputDir + formattedFilename
+
+  console.log(streamPath)
 
   const stream = pdf.pipe(fs.createWriteStream(streamPath))
   stream.on('finish', () => {
@@ -67,10 +74,7 @@ export default function createPDFWriter({ filename, nodeMap }: IPDFWriter) {
     write() {
       walk(nodeMap, nodeMap['root'])
       pdf.end()
-      startDeleteAfter10Mins()
       return formattedFilename
     },
   }
-
-  function startDeleteAfter10Mins() {}
 }
