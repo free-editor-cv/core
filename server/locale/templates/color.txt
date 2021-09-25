@@ -1,0 +1,1 @@
+<Text :styles="{ color: 'pink' }">Hello World</Text>
