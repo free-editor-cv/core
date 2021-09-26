@@ -20,7 +20,7 @@ export class PDFTextNode extends PDFNode {
 
 export class PDFDocumentElement extends PDFElement {}
 
-export class PDFPageElements extends PDFElement {}
+export class PDFPageElement extends PDFElement {}
 
 export class PDFViewElement extends PDFElement {}
 

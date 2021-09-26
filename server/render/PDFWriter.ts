@@ -6,6 +6,7 @@ import {
   PDFElement,
   PDFTextNode,
   PDFDocumentElement,
+  PDFPageElement,
 } from './PDF'
 import { NodeMap } from './nodeOps'
 import { createPDFFilename } from '../utils/formatter'
@@ -26,8 +27,6 @@ export default function createPDFWriter({
 
   const streamPath = outputDir + formattedFilename
 
-  console.log(streamPath)
-
   const stream = pdf.pipe(fs.createWriteStream(streamPath))
   stream.on('finish', () => {
     console.info(`[write] Finished writing operation to ${formattedFilename}`)
@@ -43,6 +42,8 @@ export default function createPDFWriter({
   }
 
   function draw(nodeMap: NodeMap, node: PDFNodes | PDFElements): void {
+    if (node instanceof PDFPageElement) pdf.addPage()
+
     const color = node.styles.color || getParentStyle(nodeMap, 'color', node)
     pdf.fill(color)
 

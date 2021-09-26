@@ -1,0 +1,14 @@
+<View>
+    <Text>Page 1</Text>
+</View>
+<View>
+    <Text>Content</Text>
+</View>
+<Page>
+    <View>
+        <Text>Page 2</Text>
+    </View>
+    <View>
+        <Text>Content</Text>
+    </View>
+</Page>

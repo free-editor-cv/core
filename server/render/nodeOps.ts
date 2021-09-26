@@ -6,6 +6,7 @@ import {
   PDFViewElement,
   PDFNodes,
   PDFElements,
+  PDFPageElement,
 } from './PDF'
 
 export type NodeMap = Record<string, PDFNodes | PDFElements>
@@ -48,6 +49,8 @@ function createNodeOps(nodeMap: NodeMap) {
 
     createElement(tag) {
       switch (tag) {
+        case 'Page':
+          return new PDFPageElement()
         case 'View':
           return new PDFViewElement()
         case 'Text':
