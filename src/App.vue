@@ -2,7 +2,7 @@
   <Layout>
     <template #cockpit>
       <Cockpit
-        :visualizer="visualizer"
+        :builder="builder"
         :activePage="activePage"
         @add-page="activePage = $event"
       >
@@ -13,7 +13,7 @@
     <template #preview>
       <Preview
         :activePage="activePage"
-        :visualizer="visualizer"
+        :builder="builder"
         @pagination:change="activePage = $event"
       />
     </template>
@@ -30,27 +30,28 @@ import Preview from './components/Preview/Preview.vue'
 
 import { defineComponent, ref } from 'vue'
 
-import Visualizer, { Tree } from './visualizer'
+import TreeBuilder from './visualizer/Builder'
+import Tree from './visualizer/Tree'
 import generateTemplate from './visualizer/Generator'
 
 export default defineComponent({
   name: 'app',
   components: { FreeEditorCV, Layout, Cockpit, Preview },
   setup() {
-    const visualizer = Visualizer.init()
+    const builder = TreeBuilder.init()
     const activePage = ref(0)
     const fileUrl = ref(null)
 
     return {
       activePage,
-      visualizer,
+      builder,
       fileUrl,
       handle_generatePDF,
       handle_openPDF,
     }
 
     function handle_generatePDF() {
-      const template = generateTemplate(visualizer.tree as Tree)
+      const template = generateTemplate(builder.tree as Tree)
 
       const body = JSON.stringify({
         filename: 'test',

@@ -42,7 +42,7 @@
 
 <script>
 import { defineComponent, ref, reactive, toRefs, computed } from 'vue'
-import Visualizer from '../../visualizer'
+import TreeBuilder from '../../visualizer/Builder'
 
 import TextSection from './Sections/TextSection.vue'
 
@@ -54,14 +54,14 @@ export default defineComponent({
       type: Number,
       required: true,
     },
-    visualizer: {
-      type: Visualizer,
+    builder: {
+      type: TreeBuilder,
       required: true,
     },
   },
   emits: ['add-page'],
   setup(props) {
-    const { activePage, visualizer } = toRefs(props)
+    const { activePage, builder } = toRefs(props)
     const sections = reactive([])
     const activeIndex = ref(null)
     const activeSection = computed(() => sections[activeIndex.value])
@@ -89,18 +89,16 @@ export default defineComponent({
 
       const sectionId = activeSection.value.id
 
-      if (
-        !visualizer.value.patchSection(activePage.value, sectionId, key, value)
-      )
+      if (!builder.value.patchSection(activePage.value, sectionId, key, value))
         return
     }
 
     function handle_createSection() {
       if (activeIndex.value !== null) return
 
-      // init Section in visualizer
+      // init Section in builder
       const compilerTag = newSection.component.split('-')[0]
-      const sectionId = visualizer.value.initSection(
+      const sectionId = builder.value.initSection(
         activePage.value,
         compilerTag,
         {
@@ -132,8 +130,8 @@ export default defineComponent({
       // retrieve section id
       const sectionId = activeSection.value.id
 
-      // find and remove from visualizer
-      if (!visualizer.value.removeSection(activePage.value, sectionId)) return // not found
+      // find and remove from builder
+      if (!builder.value.removeSection(activePage.value, sectionId)) return // not found
 
       // remove section from UI
       sections.splice(activeIndex.value, 1)
@@ -146,13 +144,13 @@ export default defineComponent({
 
       activeSection.value.value = input
 
-      visualizer.value.editSection(activePage.value, sectionId, input)
+      builder.value.editSection(activePage.value, sectionId, input)
     }
 
     function handle_removeSection(sectionIndex) {
       const sectionId = sections[sectionIndex].id
 
-      if (!visualizer.value.removeSection(activePage.value, sectionId)) return // not found
+      if (!builder.value.removeSection(activePage.value, sectionId)) return // not found
 
       sections.splice(activeIndex.value, 1)
 

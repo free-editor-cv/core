@@ -8,7 +8,7 @@
     />
     <Pagination
       :activePage="activePage"
-      :pagesAmount="visualizer.pages.length"
+      :pagesAmount="builder.pages.length"
       @change="$emit('pagination:change', $event)"
     />
   </div>
@@ -17,7 +17,7 @@
 <script>
 import { defineComponent, toRefs, computed } from 'vue'
 
-import Visualizer from '../../visualizer'
+import TreeBuilder from '../../visualizer/Builder'
 import Pagination from './Pagination.vue'
 import Page from './Page.vue'
 
@@ -30,22 +30,22 @@ export default defineComponent({
       type: Number,
       required: true,
     },
-    visualizer: {
-      type: Visualizer,
+    builder: {
+      type: TreeBuilder,
       required: true,
     },
   },
   setup(props) {
-    const { activePage, visualizer } = toRefs(props)
+    const { activePage, builder } = toRefs(props)
 
     const pageElements = computed(
-      () => visualizer.value.pages[activePage.value].elements
+      () => builder.value.pages[activePage.value].elements
     )
 
     return {
       activePage,
       pageElements,
-      pages: visualizer.value.pages,
+      pages: builder.value.pages,
     }
   },
 })

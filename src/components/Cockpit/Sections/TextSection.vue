@@ -67,7 +67,7 @@ export default defineComponent({
     const tags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p']
     const selectedTag = ref('p')
 
-    const colors = ['red', 'pink', 'black', 'yellow']
+    const colors = ['red', 'pink', 'black', 'blue']
     const selectedColor = ref('black')
 
     return {

@@ -1,4 +1,5 @@
-import { Tree, TreeText } from '.'
+import Tree from './Tree'
+import { TreeText } from './TreeElement'
 
 export default function generateTemplate(tree: Tree): string {
   let template = ''
