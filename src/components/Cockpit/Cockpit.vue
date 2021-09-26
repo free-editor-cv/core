@@ -23,7 +23,7 @@
           :label="section.label"
           :disabled="index !== activeIndex"
           @value:change="handle_editSection"
-          @value-option:change="handle_valueOptionChange"
+          @value-style:change="handle_valueStyleChange"
           @section:cancel="handle_cancelSection"
           @section:save="activeIndex = null"
           @section:tweak="activeIndex = index"
@@ -80,13 +80,11 @@ export default defineComponent({
       handle_cancelSection,
       handle_editSection,
       handle_removeSection,
-      handle_valueOptionChange,
+      handle_valueStyleChange,
       // handle_addPage,
     }
 
-    function handle_valueOptionChange({ key, value }) {
-      // activeSection.value.options[key] = value
-
+    function handle_valueStyleChange({ key, value }) {
       const sectionId = activeSection.value.id
 
       if (!builder.value.patchSection(activePage.value, sectionId, key, value))

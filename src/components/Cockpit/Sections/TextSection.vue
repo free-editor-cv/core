@@ -19,16 +19,27 @@
         :name="label + '-color'"
         v-model="selectedColor"
         @change="
-          $emit('value-option:change', { key: 'color', value: selectedColor })
+          $emit('value-style:change', { key: 'color', value: selectedColor })
         "
       >
         <option v-for="color in colors" :key="color" :value="color">
           {{ color }}
         </option>
       </select>
-      <!-- <select name="text-selection-tag" v-model="selectedTag" @change="$emit()">
-        <option v-for="tag in tags" :key="tag" :value="tag">{{ tag }}</option>
-      </select> -->
+      <select
+        :name="label + '-font-size'"
+        v-model="selectedFontSize"
+        @change="
+          $emit('value-style:change', {
+            key: 'fontSize',
+            value: selectedFontSize + 'px',
+          })
+        "
+      >
+        <option v-for="fontSize in fontSizes" :key="fontSize" :value="fontSize">
+          {{ fontSize }}
+        </option>
+      </select>
     </div>
   </AbstractSection>
 </template>
@@ -46,7 +57,8 @@ export default defineComponent({
     'section:tweak',
     'section:remove',
     'value:change',
-    'value-option:change',
+    'value-style:change',
+    'value-tag:change',
   ],
   props: {
     value: {
@@ -64,15 +76,15 @@ export default defineComponent({
   },
   inheritAttrs: true,
   setup() {
-    const tags = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p']
-    const selectedTag = ref('p')
+    const fontSizes = Array.from(Array(72).keys())
+    const selectedFontSize = ref(18)
 
     const colors = ['red', 'pink', 'black', 'blue']
     const selectedColor = ref('black')
 
     return {
-      tags,
-      selectedTag,
+      fontSizes,
+      selectedFontSize,
       colors,
       selectedColor,
     }

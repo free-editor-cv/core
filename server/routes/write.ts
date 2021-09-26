@@ -55,8 +55,6 @@ const postOptions = {
   ) {
     const { template } = request.body as TemplateType
 
-    console.log(template)
-
     const templateType = typeof template
 
     if (templateType !== 'string')

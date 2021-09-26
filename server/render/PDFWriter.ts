@@ -44,31 +44,13 @@ export default function createPDFWriter({
   function draw(nodeMap: NodeMap, node: PDFNodes | PDFElements): void {
     if (node instanceof PDFPageElement) pdf.addPage()
 
-    const color = node.styles.color || getParentStyle(nodeMap, 'color', node)
-    pdf.fill(color)
-
     if (node instanceof PDFTextNode) {
-      pdf.text(node.text)
-    }
-  }
+      const nodeWriter = new TextNodeWriter(pdf, node, nodeMap)!
+        .writeColor()!
+        .writeFontSize()!
 
-  const defaultStyles: Record<string, string> = {
-    color: 'black',
-  }
-  function getParentStyle(
-    nodeMap: NodeMap,
-    attr: string,
-    parent: PDFNodes | PDFElements
-  ): string {
-    if (parent instanceof PDFDocumentElement) {
-      return defaultStyles[attr]
+      nodeWriter.save()
     }
-
-    if (attr in parent.styles) {
-      return parent.styles[attr]
-    }
-
-    return getParentStyle(nodeMap, attr, nodeMap[parent.parent as string])
   }
 
   return {
@@ -77,5 +59,53 @@ export default function createPDFWriter({
       pdf.end()
       return formattedFilename
     },
+  }
+}
+
+class TextNodeWriter {
+  constructor(
+    private pdf: PDFKit.PDFDocument,
+    private node: PDFTextNode,
+    private nodeMap: NodeMap
+  ) {}
+
+  writeColor() {
+    const color =
+      this.node.styles.color ||
+      this.getParentStyle(this.nodeMap, 'color', this.node)
+    this.pdf.fill(color)
+    return this
+  }
+
+  writeFontSize() {
+    const fontSize = this.getParentStyle(this.nodeMap, 'fontSize', this.node)
+    if (fontSize) {
+      const int_fontSize = parseInt(fontSize.substr(0, fontSize.length - 2))
+      this.pdf.fontSize(int_fontSize)
+      return this
+    }
+  }
+
+  save() {
+    this.pdf.text(this.node.text)
+  }
+
+  static defaultStyles: Record<string, string> = {
+    color: 'black',
+  }
+  private getParentStyle(
+    nodeMap: NodeMap,
+    attr: string,
+    parent: PDFNodes | PDFElements
+  ): string {
+    if (parent instanceof PDFDocumentElement) {
+      return TextNodeWriter.defaultStyles[attr]
+    }
+
+    if (attr in parent.styles) {
+      return parent.styles[attr]
+    }
+
+    return this.getParentStyle(nodeMap, attr, nodeMap[parent.parent as string])
   }
 }

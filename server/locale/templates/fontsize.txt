@@ -1,0 +1,1 @@
+<Text :styles="{ fontSize: '40px' }">BIG TEXT</Text>

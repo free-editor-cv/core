@@ -1,4 +1,4 @@
-import { CompilerTag, IStyle, ITextStyle, Tag } from './Builder'
+import { CompilerTag, IStyle, ITextStyle, Tag, TreeStyleSheet } from './Builder'
 import ID from './ID'
 import { TreeElement, TreeText } from './TreeElement'
 
@@ -16,7 +16,8 @@ export default class TreePage {
    */
   public initSection(
     compilerTag: CompilerTag,
-    { tag, styles }: initSectionOptions
+    { tag, styles }: initSectionOptions,
+    styleSheet: TreeStyleSheet
   ): ID {
     const defaultStyle: IStyle = {
       color: 'black',
@@ -27,22 +28,25 @@ export default class TreePage {
 
     switch (compilerTag) {
       case 'Text':
-        return this._initTextSection({ id, tag, styles })
+        return this._initTextSection({ id, tag, styles }, styleSheet)
       default:
         throw new Error(`compilerTag ${compilerTag} not yet implemented`)
     }
   }
 
-  private _initTextSection({
-    id,
-    tag,
-    styles,
-  }: {
-    id: ID
-    tag: Tag
-    styles: ITextStyle
-  }): ID {
-    const section = new TreeText(id, '', tag, styles)
+  private _initTextSection(
+    {
+      id,
+      tag,
+      styles,
+    }: {
+      id: ID
+      tag: Tag
+      styles: IStyle
+    },
+    styleSheet: TreeStyleSheet
+  ): ID {
+    const section = new TreeText(id, '', tag, styles, styleSheet)
     this.elements.push(section)
     return id
   }
