@@ -1,4 +1,4 @@
-import { CompilerTag, IStyle, ITextStyle, Tag } from '.'
+import { CompilerTag, IStyle, ITextStyle, Tag } from './Builder'
 import ID from './ID'
 import { TreeElement, TreeText } from './TreeElement'
 
