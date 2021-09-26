@@ -28,16 +28,26 @@ export default class Visualizer {
 
   public initSection(
     pageIndex: number,
-    type: 'Text' | 'View',
+    compilerTag: CompilerTag,
     options: any
   ): ID {
     const page = this._retriveTargetPage(pageIndex)
-    return page.initSection(type, options)
+    return page.initSection(compilerTag, options)
   }
 
   public removeSection(pageIndex: number, sectionId: ID): boolean {
     const page = this._retriveTargetPage(pageIndex)
     return page.removeSection(sectionId)
+  }
+
+  public patchSection(
+    pageIndex: number,
+    sectionId: ID,
+    key: string,
+    value: string
+  ): boolean {
+    const page = this._retriveTargetPage(pageIndex)
+    return page.patchSection(sectionId, key, value)
   }
 
   public editSection(
@@ -67,19 +77,32 @@ export class Tree {
 }
 
 export abstract class TreeElement {
-  constructor(public id: ID, public value: string) {}
+  private _hasStyles: boolean = false
+  constructor(public id: ID, public value: string, public styles: IStyle) {
+    this._hasStyles = Boolean(Object.keys(styles).length)
+  }
+
+  get hasStyle(): boolean {
+    return this._hasStyles
+  }
 }
 export class TreeText extends TreeElement {
-  constructor(id: ID, value: string, public tag: Headings) {
-    super(id, value)
+  constructor(id: ID, value: string, public tag: Tag, styles: ITextStyle) {
+    super(id, value, styles)
   }
 }
 
-type Headings = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
-type Paragraphs = 'span' | 'p'
-type Tag = Headings | Paragraphs
+interface IStyle {
+  [key: string]: string
+}
+interface ITextStyle extends IStyle {}
+
+type Tag = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'p'
+type CompilerTag = 'Text' | 'View'
+
 interface initSectionOptions {
-  tag?: Tag
+  tag: Tag
+  styles?: IStyle
 }
 class TreePage {
   elements: TreeElement[] = []
@@ -89,20 +112,27 @@ class TreePage {
   /**
    * Init
    */
-  public initSection(type: 'Text' | 'View', options: initSectionOptions): ID {
-    options = Object.assign({ tag: 'h1' }, options)
+  public initSection(
+    compilerTag: CompilerTag,
+    { tag, styles }: initSectionOptions
+  ): ID {
+    const defaultStyle: IStyle = {
+      color: 'black',
+    }
+    styles = Object.assign(defaultStyle, styles)
 
     const id = new ID()
-    switch (type) {
+
+    switch (compilerTag) {
       case 'Text':
-        return this._initTextSection(id, (options.tag as Headings) || 'h1') // FIXME find the correct guard
+        return this._initTextSection(id, tag, styles)
       default:
-        throw new Error(`type ${type} not yet implemented`)
+        throw new Error(`compilerTag ${compilerTag} not yet implemented`)
     }
   }
 
-  private _initTextSection(id: ID, tag: Headings): ID {
-    const section = new TreeText(id, '', tag)
+  private _initTextSection(id: ID, tag: Tag, styles: ITextStyle): ID {
+    const section = new TreeText(id, '', tag, styles)
     this.elements.push(section)
     return id
   }
@@ -116,6 +146,16 @@ class TreePage {
     if (target == null) return false
 
     target.value = newValue
+
+    return true
+  }
+
+  public patchSection(sectionId: ID, key: string, value: string): boolean {
+    const target = this._retrieveSection(sectionId)
+
+    if (target == null) return false
+
+    target.styles[key] = value
 
     return true
   }

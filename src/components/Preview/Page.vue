@@ -1,7 +1,9 @@
 <template>
   <article>
     <div v-for="content in pageElements" :key="content.value">
-      <component :is="content.tag">{{ content.value }}</component>
+      <component :is="content.tag" :style="content.styles">{{
+        content.value
+      }}</component>
     </div>
   </article>
 </template>

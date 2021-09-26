@@ -8,20 +8,43 @@ export default function generateTemplate(tree: Tree): string {
   pages.forEach(({ elements }) => {
     elements.forEach(element => {
       if (element instanceof TreeText) {
-        template += wrapTextNoStyle(element.value)
+        console.log(element)
+        if (!element.hasStyle) {
+          template += wrapTextNoStyle(element.value)
+        } else {
+          template += wrapTextWithStyle(element.styles)(element.value)
+        }
       }
     })
   })
+
+  console.log(template)
 
   return template
 }
 
 const wrapTextNoStyle = wrapWithElement('Text')()
+const wrapTextWithStyle = wrapWithElement('Text')
 
 function wrapWithElement(tag: 'Text' | 'View') {
-  return function addStyleToElement(style?: any) {
+  return function addStyleToElement(styles?: any) {
     return function addContentToElement(value: string) {
-      return `<${tag}>${value}</${tag}>`
+      return `<${tag} ${
+        styles ? `:styles="${serialize(styles)}"` : ''
+      }>${value}</${tag}>`
     }
   }
+}
+
+function serialize(obj: Object) {
+  const entries = Object.entries(obj)
+  return (
+    '{' +
+    entries.reduce((acc, [key, value], index) => {
+      acc += `${key}: '${value}'`
+      if (index < entries.length - 1) acc += ', '
+      return acc
+    }, '') +
+    '}'
+  )
 }

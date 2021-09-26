@@ -23,6 +23,7 @@
           :label="section.label"
           :disabled="index !== activeIndex"
           @value:change="handle_editSection"
+          @value-option:change="handle_valueOptionChange"
           @section:cancel="handle_cancelSection"
           @section:save="activeIndex = null"
           @section:tweak="activeIndex = index"
@@ -68,6 +69,7 @@ export default defineComponent({
     const newSection = reactive({
       label: 'section label',
       component: 'Text',
+      options: {},
     })
 
     return {
@@ -78,15 +80,36 @@ export default defineComponent({
       handle_cancelSection,
       handle_editSection,
       handle_removeSection,
+      handle_valueOptionChange,
       // handle_addPage,
+    }
+
+    function handle_valueOptionChange({ key, value }) {
+      // activeSection.value.options[key] = value
+
+      const sectionId = activeSection.value.id
+
+      if (
+        !visualizer.value.patchSection(activePage.value, sectionId, key, value)
+      )
+        return
     }
 
     function handle_createSection() {
       if (activeIndex.value !== null) return
 
       // init Section in visualizer
-      const type = newSection.component.split('-')[0]
-      const sectionId = visualizer.value.initSection(activePage.value, type)
+      const compilerTag = newSection.component.split('-')[0]
+      const sectionId = visualizer.value.initSection(
+        activePage.value,
+        compilerTag,
+        {
+          tag: 'p', // received it from TextSection,
+          styles: {
+            color: 'black',
+          },
+        }
+      )
 
       // sync the UI
       sections.push({
@@ -102,6 +125,7 @@ export default defineComponent({
       // reset newSection
       newSection.label = 'section label'
       newSection.component = 'Text'
+      newSection.options = {}
     }
 
     function handle_cancelSection() {
