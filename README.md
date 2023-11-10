@@ -2,14 +2,6 @@
 
 ## Local Usage
 
-Clone the repo to your machine and install dependencies
-
-```sh
-git clone git@github.com:free-editor-cv/core.git
-
-yarn
-```
-
 Just run in two separete terminals
 
 ```sh
